@@ -41,7 +41,7 @@ public class SettingsActivity extends AppCompatActivity {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btlogin:
-                Intent mIntent = new Intent(SettingsActivity.this, LoginActivity.class);
+                Intent mIntent = new Intent(SettingsActivity.this, MapsActivity.class);
                 startActivity(mIntent);
                 break;
         }
