@@ -6,10 +6,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.net.Uri;
+import android.provider.CalendarContract;
 import android.provider.MediaStore;
+import android.provider.Settings;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.net.URI;
 import java.util.Calendar;
 
 public class CoupleInfoActivity extends AppCompatActivity {
@@ -39,6 +45,7 @@ public class CoupleInfoActivity extends AppCompatActivity {
     private final static int REQ_CPPICTURE = 5;
 
     private String myImageUri, coupleImageUri;
+    private SharedPreferences mPrefLoginInfo, mPrefCoupleInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +57,8 @@ public class CoupleInfoActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         toolbar.inflateMenu(R.menu.activity_couple_info);
-
+        mPrefLoginInfo = getSharedPreferences("USER_LOGIN_INFO", MODE_PRIVATE);
+        mPrefCoupleInfo = getSharedPreferences("USER_CP_INFO", MODE_PRIVATE);
         InitPage();
     }
 
@@ -71,7 +79,15 @@ public class CoupleInfoActivity extends AppCompatActivity {
             if (bIsModifyEnabled) {
                 bIsModifyEnabled = !bIsModifyEnabled;
                 enableModeChange(bIsModifyEnabled);
+                SharedPreferences.Editor mMyEditor = mPrefLoginInfo.edit();
+                SharedPreferences.Editor mCpEditor = mPrefCoupleInfo.edit();
+                mMyEditor.putString("USER_NAME", etMyName.getText().toString());
+                mCpEditor.putString("USER_NAME", etCoupleName.getText().toString());
+                mCpEditor.putString("USER_REMEMBER", etRememberWord.getText().toString());
+                mMyEditor.commit();
+                mCpEditor.commit();
 
+                Snackbar.make(getWindow().getDecorView().getRootView(), "저장되었습니다.", Snackbar.LENGTH_SHORT).show();
                 SharedPreferences mSharedPreferences = getSharedPreferences("USER_LOGIN_INFO", MODE_PRIVATE);
                 String firebaseUid = mSharedPreferences.getString("FIREBASE_UID", "");
 
@@ -113,15 +129,91 @@ public class CoupleInfoActivity extends AppCompatActivity {
         etCoupleBirthDay.setInputType(0);
         etMeetDate.setInputType(0);
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference myRef = databaseReference.child("coupleInfos");
-
         SharedPreferences mSharedPreferences = getSharedPreferences("USER_LOGIN_INFO", MODE_PRIVATE);
         String firebaseUid = mSharedPreferences.getString("FIREBASE_UID", "");
 
+        if (!mSharedPreferences.getString("USER_NAME", "").equals("")) {
+            setInitialData();
+        } else {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference ref = database.getReference("coupleInfos/" + firebaseUid);
 
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    CoupleInfo coupleInfo = dataSnapshot.getValue(CoupleInfo.class);
+                    try {
+                        etMyName.setText(coupleInfo.userName);
+                        etMyBirthDay.setText(coupleInfo.userBirthDay);
+                        ivMyImage.setImageURI(Uri.parse(coupleInfo.userPictureUrl));
 
+                        etCoupleName.setText(coupleInfo.coupleName);
+                        etCoupleBirthDay.setText(coupleInfo.coupleBirthDay);
+                        ivCoupleImage.setImageURI(Uri.parse(coupleInfo.couplePictureUrl));
+
+                        etMeetDate.setText(coupleInfo.meetDate);
+                        etRememberWord.setText(coupleInfo.rememberWord);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
         enableModeChange(false);
+    }
+
+    private void setInitialData() {
+        try {
+            ivMyImage.setImageURI(CalendarContract.CalendarCache.URI.parse(mPrefLoginInfo.getString("USER_PIC", "")));
+            etMyName.setText(mPrefLoginInfo.getString("USER_NAME", ""));
+            etMyBirthDay.setText(getDateStrFromPref(REQ_MYBIRTHDAY));
+            ivCoupleImage.setImageURI(CalendarContract.CalendarCache.URI.parse(mPrefCoupleInfo.getString("USER_PIC", "")));
+            etCoupleName.setText(mPrefCoupleInfo.getString("USER_NAME", ""));
+            etCoupleBirthDay.setText(getDateStrFromPref(REQ_CPBIRTHDAY));
+            etMeetDate.setText(getDateStrFromPref(REQ_MEETDAY));
+            etRememberWord.setText(mPrefCoupleInfo.getString("USER_REMEMBER", ""));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getDateStrFromPref(int requestCode) {
+        String strTemp;
+        Calendar mCalendar = Calendar.getInstance();
+        int year, month, day;
+        year = mCalendar.get(Calendar.YEAR);
+        month = mCalendar.get(Calendar.MONTH);
+        day = mCalendar.get(Calendar.DAY_OF_MONTH);
+
+        switch (requestCode) {
+            case REQ_MYBIRTHDAY:
+                year = mPrefLoginInfo.getInt("USER_BD_Y", 1);
+                month = mPrefLoginInfo.getInt("USER_BD_M", 1);
+                day = mPrefLoginInfo.getInt("USER_BD_D", 1);
+                break;
+            case REQ_CPBIRTHDAY:
+                year = mPrefCoupleInfo.getInt("USER_BD_Y", 1);
+                month = mPrefCoupleInfo.getInt("USER_BD_M", 1);
+                day = mPrefCoupleInfo.getInt("USER_BD_D", 1);
+                break;
+            case REQ_MEETDAY:
+                year = mPrefCoupleInfo.getInt("USER_MD_Y", 1);
+                month = mPrefCoupleInfo.getInt("USER_MD_M", 1);
+                day = mPrefCoupleInfo.getInt("USER_MD_D", 1);
+                break;
+        }
+
+        if (year == 1) {
+            strTemp = "날짜를 선택하세요";
+        } else {
+            strTemp = String.valueOf(year) + "년 " + String.valueOf(month) + "월 " + String.valueOf(day) + "일";
+        }
+        return strTemp;
     }
 
     private void enableModeChange(boolean mode) {
@@ -169,11 +261,17 @@ public class CoupleInfoActivity extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK) {
                 ivMyImage.setImageURI(data.getData());
                 myImageUri = data.getData().toString();
+                SharedPreferences.Editor mMyEditor = mPrefLoginInfo.edit();
+                mMyEditor.putString("USER_PIC", data.getData().toString());
+                mMyEditor.commit();
             }
         } else if (requestCode == REQ_CPPICTURE) {
             if (resultCode == Activity.RESULT_OK) {
                 ivCoupleImage.setImageURI(data.getData());
                 coupleImageUri = data.getData().toString();
+                SharedPreferences.Editor mCpEditor = mPrefCoupleInfo.edit();
+                mCpEditor.putString("USER_PIC", data.getData().toString());
+                mCpEditor.commit();
             }
         }
     }
@@ -184,15 +282,29 @@ public class CoupleInfoActivity extends AppCompatActivity {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 try {
+                    SharedPreferences.Editor mMyEditor = mPrefLoginInfo.edit();
+                    SharedPreferences.Editor mCpEditor = mPrefCoupleInfo.edit();
                     switch (flag) {
                         case REQ_MYBIRTHDAY:
                             etMyBirthDay.setText(year + "년 " + (monthOfYear + 1) + "월 " + dayOfMonth + "일");
+                            mMyEditor.putInt("USER_BD_Y", year);
+                            mMyEditor.putInt("USER_BD_M", (monthOfYear + 1));
+                            mMyEditor.putInt("USER_BD_D", dayOfMonth);
+                            mMyEditor.commit();
                             break;
                         case REQ_CPBIRTHDAY:
                             etCoupleBirthDay.setText(year + "년 " + (monthOfYear + 1) + "월 " + dayOfMonth + "일");
+                            mCpEditor.putInt("USER_BD_Y", year);
+                            mCpEditor.putInt("USER_BD_M", (monthOfYear + 1));
+                            mCpEditor.putInt("USER_BD_D", dayOfMonth);
+                            mCpEditor.commit();
                             break;
                         case REQ_MEETDAY:
                             etMeetDate.setText(year + "년 " + (monthOfYear + 1) + "월 " + dayOfMonth + "일");
+                            mCpEditor.putInt("USER_MD_Y", year);
+                            mCpEditor.putInt("USER_MD_M", (monthOfYear + 1));
+                            mCpEditor.putInt("USER_MD_D", dayOfMonth);
+                            mCpEditor.commit();
                             break;
                     }
                 } catch (Exception e) {

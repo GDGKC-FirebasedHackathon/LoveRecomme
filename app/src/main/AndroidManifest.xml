@@ -31,9 +31,6 @@
             android:name=".CoupleInfoActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".CoupleDiaryActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".CoupleDayActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
