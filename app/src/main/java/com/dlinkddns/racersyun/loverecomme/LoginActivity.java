@@ -42,6 +42,8 @@ public class LoginActivity extends AppCompatActivity implements
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private GoogleApiClient mGoogleApiClient;
 
+    private String uid, email, name, photo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,8 +93,12 @@ public class LoginActivity extends AppCompatActivity implements
                     SharedPreferences.Editor editor = mSharedPreferences.edit();
                     editor.putString("FIREBASE_UID", user.getUid());
                     editor.commit();
-                    UserController.createUser(user.getUid(),
-                            user.getEmail(), user.getDisplayName(), user.getPhotoUrl().toString());
+                    UserController.createUser(user.getUid(), user.getEmail(), user.getDisplayName(), user.getPhotoUrl().toString());
+
+                    uid = user.getUid();
+                    email = user.getEmail();
+                    name = user.getDisplayName();
+                    photo = user.getPhotoUrl().toString();
                 } else {
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
@@ -180,7 +186,7 @@ public class LoginActivity extends AppCompatActivity implements
         if (signedIn) {
             findViewById(R.id.btSignInWithGoogle).setVisibility(View.GONE);
             findViewById(R.id.btSignOut).setVisibility(View.VISIBLE);
-
+            //UserController.createUser(uid, email, name, photo);
             Intent mIntent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(mIntent);
             finish();
