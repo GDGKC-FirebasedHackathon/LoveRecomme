@@ -4,5 +4,14 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+    <!--  LoginActivity  -->
+    <string name="signed_in_title">
+        소중한 연인과의 추억을\n
+        저장하세요.
+    </string>
+    <string name="signed_in_msg">
+        소중한 추억을 잃지 않도록 도와드립니다.\n
+        지금 구글 계정으로 로그인하고\n
+        추억을 저장하세요.
+    </string>
 </resources>
