@@ -18,6 +18,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".CoupleInfoActivity" />
+        <activity android:name=".CoupleDiaryActivity" />
+        <activity android:name=".CoupleDayActivity" />
+        <activity android:name=".CoupleGalleryActivity" />
+        <activity android:name=".RecommendCourseActivity" />
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".LogoActivity"></activity>
     </application>
 
 </manifest>

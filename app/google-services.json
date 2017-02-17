@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "77804300807",
+    "firebase_url": "https://loverecomme.firebaseio.com",
+    "project_id": "loverecomme",
+    "storage_bucket": "loverecomme.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:77804300807:android:a864d2d081340d17",
+        "android_client_info": {
+          "package_name": "com.dlinkddns.racersyun.loverecomme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "77804300807-vosnf0monm04is3cdbt9d7vr4o4kq9co.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dlinkddns.racersyun.loverecomme",
+            "certificate_hash": "497852509D17DF546EEAC63C00C848C932AEF802"
+          }
+        },
+        {
+          "client_id": "77804300807-injcdfmppmse84suaneu4qb6hko9021t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0WuFijSmcGUXqP999EVMu7ha66L5DdZU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "77804300807-injcdfmppmse84suaneu4qb6hko9021t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
