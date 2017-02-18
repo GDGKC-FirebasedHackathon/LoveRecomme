@@ -34,9 +34,6 @@
             android:name=".CoupleDayActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".CoupleGalleryActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".RecommendCourseActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -65,7 +62,13 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps" />
+        <activity
+            android:name=".RecommendAddActivity"
+            android:theme="@style/Base.V21.Theme.AppCompat.Dialog" />
+        <activity
+            android:name=".CoupleGalleryActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

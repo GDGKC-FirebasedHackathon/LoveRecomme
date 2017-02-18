@@ -42,7 +42,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -86,10 +85,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         tv_marker.setText(formatted);
 
         if (isSelectedMarker) {
-            tv_marker.setBackgroundResource(R.drawable.ic_marker_phone_blue);
+            tv_marker.setBackgroundResource(R.drawable.ic_map_point_select);
             tv_marker.setTextColor(Color.WHITE);
         } else {
-            tv_marker.setBackgroundResource(R.drawable.ic_marker_phone);
+            tv_marker.setBackgroundResource(R.drawable.ic_map_point);
             tv_marker.setTextColor(Color.BLACK);
         }
 
@@ -161,8 +160,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         changeSelectedMarker(null);
     }
 
-    public void onClick(View v){
-        switch (v.getId()){
+    public void onClick(View v) {
+        switch (v.getId()) {
             case R.id.btMyPosition:
                 break;
 

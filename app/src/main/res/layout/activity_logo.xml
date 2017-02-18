@@ -10,15 +10,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.dlinkddns.racersyun.loverecomme.LogoActivity">
 
-    <TextView
+    <ImageView
+        android:layout_marginTop="50dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="러브레콤.\n\n로고 넣을거임"
-        android:textAlignment="center"
-        android:textColor="#000000"
-        android:textSize="40dp" />
-
+        android:src="@drawable/logo" />
 
 </RelativeLayout>

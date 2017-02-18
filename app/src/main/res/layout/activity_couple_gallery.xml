@@ -33,7 +33,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="사진첩"
+                    android:text="커플사진첩"
                     android:textAlignment="center"
                     android:textColor="#ffffff"
                     android:textSize="12pt" />
@@ -46,14 +46,23 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="55dp"
+            android:layout_marginBottom="40dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="95dp"
+            android:background="@drawable/rounded"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvTest"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="test" />
+            <ImageView
+                android:id="@+id/ivCouplePhoto1"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_gravity="center"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:src="@drawable/img_blank_profile" />
+
+
         </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
 </android.support.v4.widget.DrawerLayout>

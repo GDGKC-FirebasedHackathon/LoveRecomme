@@ -21,8 +21,6 @@ public class MainActivity extends AppCompatActivity
 
     private final static int REQ_COUPLEINFO = 101;
     private final static int REQ_RECOMMENDCOURSE = 102;
-    private final static int REQ_COUPLEGALLERY = 103;
-    private final static int REQ_COUPLEDIARY = 104;
     private final static int REQ_COUPLEDAY = 105;
     private final static int REQ_SETTINGS = 106;
 
@@ -77,14 +75,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.itSettings) {
             Intent mIntent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivityForResult(mIntent, REQ_SETTINGS);
-        } else if (id == R.id.itCoupleGallery) {
-            Intent mIntent = new Intent(MainActivity.this, CoupleGalleryActivity.class);
-            startActivityForResult(mIntent, REQ_COUPLEGALLERY);
-        } else if (id == R.id.itCoupleDiary) {
-            Intent mIntent = new Intent(MainActivity.this, CoupleDiaryActivity.class);
-            startActivityForResult(mIntent, REQ_COUPLEDIARY);
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -103,11 +94,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.btCoupleGallery:
                 mIntent = new Intent(MainActivity.this, CoupleGalleryActivity.class);
-                startActivityForResult(mIntent, REQ_COUPLEGALLERY);
-                break;
-            case R.id.btCoupleDiary:
-                mIntent = new Intent(MainActivity.this, CoupleDiaryActivity.class);
-                startActivityForResult(mIntent, REQ_COUPLEDIARY);
+                startActivity(mIntent);
                 break;
         }
     }

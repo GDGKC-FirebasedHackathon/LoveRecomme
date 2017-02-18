@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">러브레콤.</string>
+    <string name="app_name">러브레콤♥</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -15,4 +15,7 @@
         추억을 저장하세요.
     </string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_recommend_add">RecommendAddActivity</string>
+    <string name="hello_round">Hello Round World!</string>
+    <string name="hello_square">Hello Square World!</string>
 </resources>

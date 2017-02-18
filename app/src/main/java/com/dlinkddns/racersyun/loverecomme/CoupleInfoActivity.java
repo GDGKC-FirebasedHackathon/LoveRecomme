@@ -33,9 +33,8 @@ import java.net.URI;
 import java.util.Calendar;
 
 public class CoupleInfoActivity extends AppCompatActivity {
-
     private ImageView ivMyImage, ivCoupleImage;
-    private EditText etMyName, etCoupleName, etMyBirthDay, etCoupleBirthDay, etMeetDate, etRememberWord;
+    private EditText etMeetDate, etMyName, etCoupleName, etMyBirthDay, etCoupleBirthDay, etMemoryTalk;
     private boolean bIsModifyEnabled = false;
 
     private final static int REQ_MYBIRTHDAY = 1;
@@ -44,127 +43,45 @@ public class CoupleInfoActivity extends AppCompatActivity {
     private final static int REQ_MYPICTURE = 4;
     private final static int REQ_CPPICTURE = 5;
 
-    private String myImageUri, coupleImageUri;
     private SharedPreferences mPrefLoginInfo, mPrefCoupleInfo;
+    private String myImageUri, coupleImageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_couple_info);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         toolbar.inflateMenu(R.menu.activity_couple_info);
-        mPrefLoginInfo = getSharedPreferences("USER_LOGIN_INFO", MODE_PRIVATE);
-        mPrefCoupleInfo = getSharedPreferences("USER_CP_INFO", MODE_PRIVATE);
-        InitPage();
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_couple_info, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == android.R.id.home) {
-            finish();
-            return true;
-        } else if (id == R.id.itEnableChangeInfo) {
-            if (bIsModifyEnabled) {
-                bIsModifyEnabled = !bIsModifyEnabled;
-                enableModeChange(bIsModifyEnabled);
-                SharedPreferences.Editor mMyEditor = mPrefLoginInfo.edit();
-                SharedPreferences.Editor mCpEditor = mPrefCoupleInfo.edit();
-                mMyEditor.putString("USER_NAME", etMyName.getText().toString());
-                mCpEditor.putString("USER_NAME", etCoupleName.getText().toString());
-                mCpEditor.putString("USER_REMEMBER", etRememberWord.getText().toString());
-                mMyEditor.commit();
-                mCpEditor.commit();
-
-                Snackbar.make(getWindow().getDecorView().getRootView(), "저장되었습니다.", Snackbar.LENGTH_SHORT).show();
-                SharedPreferences mSharedPreferences = getSharedPreferences("USER_LOGIN_INFO", MODE_PRIVATE);
-                String firebaseUid = mSharedPreferences.getString("FIREBASE_UID", "");
-
-                CoupleInfoController.createInfo(firebaseUid, etMyName.getText().toString(), etMyBirthDay.getText().toString(), myImageUri
-                        , etCoupleName.getText().toString(), etCoupleBirthDay.getText().toString(), coupleImageUri
-                        , etMeetDate.getText().toString(), etRememberWord.getText().toString());
-            } else {
-                bIsModifyEnabled = !bIsModifyEnabled;
-                enableModeChange(bIsModifyEnabled);
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        Intent mIntent = new Intent();
-        mIntent.putExtra("keyExtra", "결과내용");
-        setResult(RESULT_OK, mIntent);
-        finish();
-    }
-
-    private void InitPage() {
         ivMyImage = (ImageView) findViewById(R.id.ivMyImage);
+        ivMyImage.setBackground(new ShapeDrawable(new OvalShape()));
+        ivMyImage.setClipToOutline(true);
+
         ivCoupleImage = (ImageView) findViewById(R.id.ivCoupleImage);
+        ivCoupleImage.setBackground(new ShapeDrawable(new OvalShape()));
+        ivCoupleImage.setClipToOutline(true);
+
         etMyName = (EditText) findViewById(R.id.etMyName);
         etCoupleName = (EditText) findViewById(R.id.etCoupleName);
         etMyBirthDay = (EditText) findViewById(R.id.etMyBirthDay);
         etCoupleBirthDay = (EditText) findViewById(R.id.etCoupleBirthDay);
         etMeetDate = (EditText) findViewById(R.id.etMeetDate);
-        etRememberWord = (EditText) findViewById(R.id.etRememberWord);
-
-        ivMyImage.setBackground(new ShapeDrawable(new OvalShape()));
-        ivMyImage.setClipToOutline(true);
-        ivCoupleImage.setBackground(new ShapeDrawable(new OvalShape()));
-        ivCoupleImage.setClipToOutline(true);
+        etMemoryTalk = (EditText) findViewById(R.id.etRememberWord);
 
         etMyBirthDay.setInputType(0);
         etCoupleBirthDay.setInputType(0);
         etMeetDate.setInputType(0);
 
-        SharedPreferences mSharedPreferences = getSharedPreferences("USER_LOGIN_INFO", MODE_PRIVATE);
-        String firebaseUid = mSharedPreferences.getString("FIREBASE_UID", "");
-
-        if (!mSharedPreferences.getString("USER_NAME", "").equals("")) {
-            setInitialData();
-        } else {
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference ref = database.getReference("coupleInfos/" + firebaseUid);
-
-            ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    CoupleInfo coupleInfo = dataSnapshot.getValue(CoupleInfo.class);
-                    try {
-                        etMyName.setText(coupleInfo.userName);
-                        etMyBirthDay.setText(coupleInfo.userBirthDay);
-                        ivMyImage.setImageURI(Uri.parse(coupleInfo.userPictureUrl));
-
-                        etCoupleName.setText(coupleInfo.coupleName);
-                        etCoupleBirthDay.setText(coupleInfo.coupleBirthDay);
-                        ivCoupleImage.setImageURI(Uri.parse(coupleInfo.couplePictureUrl));
-
-                        etMeetDate.setText(coupleInfo.meetDate);
-                        etRememberWord.setText(coupleInfo.rememberWord);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        }
         enableModeChange(false);
+
+        mPrefLoginInfo = getSharedPreferences("USER_LOGIN_INFO", MODE_PRIVATE);
+        mPrefCoupleInfo = getSharedPreferences("USER_CP_INFO", MODE_PRIVATE);
+
+        setInitialData();
     }
 
     private void setInitialData() {
@@ -176,7 +93,7 @@ public class CoupleInfoActivity extends AppCompatActivity {
             etCoupleName.setText(mPrefCoupleInfo.getString("USER_NAME", ""));
             etCoupleBirthDay.setText(getDateStrFromPref(REQ_CPBIRTHDAY));
             etMeetDate.setText(getDateStrFromPref(REQ_MEETDAY));
-            etRememberWord.setText(mPrefCoupleInfo.getString("USER_REMEMBER", ""));
+            etMemoryTalk.setText(mPrefCoupleInfo.getString("USER_REMEMBER", ""));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -216,17 +133,6 @@ public class CoupleInfoActivity extends AppCompatActivity {
         return strTemp;
     }
 
-    private void enableModeChange(boolean mode) {
-        ivMyImage.setEnabled(mode);
-        ivCoupleImage.setEnabled(mode);
-        etMyName.setEnabled(mode);
-        etCoupleName.setEnabled(mode);
-        etMyBirthDay.setEnabled(mode);
-        etCoupleBirthDay.setEnabled(mode);
-        etMeetDate.setEnabled(mode);
-        etRememberWord.setEnabled(mode);
-    }
-
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ivMyImage:
@@ -260,20 +166,71 @@ public class CoupleInfoActivity extends AppCompatActivity {
         if (requestCode == REQ_MYPICTURE) {
             if (resultCode == Activity.RESULT_OK) {
                 ivMyImage.setImageURI(data.getData());
-                myImageUri = data.getData().toString();
                 SharedPreferences.Editor mMyEditor = mPrefLoginInfo.edit();
                 mMyEditor.putString("USER_PIC", data.getData().toString());
                 mMyEditor.commit();
+                myImageUri = data.getData().toString();
             }
         } else if (requestCode == REQ_CPPICTURE) {
             if (resultCode == Activity.RESULT_OK) {
                 ivCoupleImage.setImageURI(data.getData());
-                coupleImageUri = data.getData().toString();
                 SharedPreferences.Editor mCpEditor = mPrefCoupleInfo.edit();
                 mCpEditor.putString("USER_PIC", data.getData().toString());
                 mCpEditor.commit();
+                coupleImageUri = data.getData().toString();
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_couple_info, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            finish();
+            return true;
+        } else if (id == R.id.itEnableChangeInfo) {
+            if (!bIsModifyEnabled) {
+                bIsModifyEnabled = true;
+            } else {
+                SharedPreferences.Editor mMyEditor = mPrefLoginInfo.edit();
+                SharedPreferences.Editor mCpEditor = mPrefCoupleInfo.edit();
+                mMyEditor.putString("USER_NAME", etMyName.getText().toString());
+                mCpEditor.putString("USER_NAME", etCoupleName.getText().toString());
+                mCpEditor.putString("USER_REMEMBER", etMemoryTalk.getText().toString());
+                mMyEditor.commit();
+                mCpEditor.commit();
+
+                SharedPreferences mSharedPreferences = getSharedPreferences("USER_LOGIN_INFO", MODE_PRIVATE);
+                String firebaseUid = mSharedPreferences.getString("FIREBASE_UID", "");
+
+                CoupleInfoController.createInfo(firebaseUid, etMyName.getText().toString(), etMyBirthDay.getText().toString(), myImageUri
+                        , etCoupleName.getText().toString(), etCoupleBirthDay.getText().toString(), coupleImageUri
+                        , etMeetDate.getText().toString(), etMemoryTalk.getText().toString());
+
+
+                bIsModifyEnabled = false;
+                Snackbar.make(getWindow().getDecorView().getRootView(), "저장되었습니다.", Snackbar.LENGTH_SHORT).show();
+            }
+            enableModeChange(bIsModifyEnabled);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent mIntent = new Intent();
+        mIntent.putExtra("keyExtra", "결과내용");
+        setResult(RESULT_OK, mIntent);
+        finish();
     }
 
     public void openDatePickerDialog(final int flag) {
@@ -316,5 +273,16 @@ public class CoupleInfoActivity extends AppCompatActivity {
         datePickerDialog.getDatePicker().setCalendarViewShown(false);
         datePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         datePickerDialog.show();
+    }
+
+    private void enableModeChange(boolean mode) {
+        ivMyImage.setEnabled(mode);
+        ivCoupleImage.setEnabled(mode);
+        etMyName.setEnabled(mode);
+        etCoupleName.setEnabled(mode);
+        etMyBirthDay.setEnabled(mode);
+        etCoupleBirthDay.setEnabled(mode);
+        etMeetDate.setEnabled(mode);
+        etMemoryTalk.setEnabled(mode);
     }
 }

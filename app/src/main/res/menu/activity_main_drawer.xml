@@ -9,13 +9,6 @@
             android:id="@+id/itCoupleDay"
             android:title="기념일" />
         <item
-            android:id="@+id/itCoupleGallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="커플사진첩" />
-        <item
-            android:id="@+id/itCoupleDiary"
-            android:title="커플일기" />
-        <item
             android:id="@+id/itRecommendCourse"
             android:title="데이트코스" />
         <item
